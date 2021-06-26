@@ -36,8 +36,8 @@ namespace NK.MyEditor
         {
             EditorGUILayout.LabelField("Animation Settings:", EditorStyles.boldLabel);
             spriteSheet = (Texture2D)EditorGUILayout.ObjectField("Sprite Sheet:", spriteSheet, typeof(Texture2D), true);
-            animWidth = EditorGUILayout.IntField("Animation Width:", animWidth);
-            animHeight = EditorGUILayout.IntField("Animation Height:", animHeight);
+            animWidth = EditorGUILayout.IntField("Single Sprite Width:", animWidth);
+            animHeight = EditorGUILayout.IntField("Single Sprite Height:", animHeight);
             numOfanimations = EditorGUILayout.IntField("Number of Animations:", numOfanimations);
             numOfFrames = EditorGUILayout.IntField("Frames per Animation:", numOfFrames);
             timePerFrame = EditorGUILayout.FloatField("Timer per Frame:", timePerFrame);
