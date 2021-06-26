@@ -12,7 +12,6 @@ namespace NK.MyEditor
         public int animHeight = 160;
         public int numOfanimations = 8;
         public int numOfFrames = 3;
-        public float timePerFrame = 0.1f;
         public int samplesFrameRate = 5;
         public bool loop = true;
 
@@ -41,8 +40,7 @@ namespace NK.MyEditor
             animHeight = EditorGUILayout.IntField("Single Sprite Height:", animHeight);
             numOfanimations = EditorGUILayout.IntField("Number of Animations:", numOfanimations);
             numOfFrames = EditorGUILayout.IntField("Frames per Animation:", numOfFrames);
-            timePerFrame = EditorGUILayout.FloatField("Timer per Frame:", timePerFrame);
-            samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate:", samplesFrameRate);
+            samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate", samplesFrameRate);
             loop = EditorGUILayout.Toggle("Loop:", loop);
 
             EditorGUILayout.Space();
@@ -95,18 +93,7 @@ namespace NK.MyEditor
                 return;
             }
 
-            //if (samplesFrameRate < numOfFrames)
-            //{
-            //    Debug.LogError("Samples Frame Rate should be bigger that the number of frames!");
-            //    return;
-            //}
-
-            EditorCurveBinding curveBinding = new EditorCurveBinding
-            {
-                type = typeof(SpriteRenderer),
-                path = "",
-                propertyName = "m_Sprite"
-            };
+            EditorCurveBinding curveBinding = EditorCurveBinding.PPtrCurve(string.Empty, typeof(SpriteRenderer), "m_Sprite");
 
             int i = 0;
             for (int j = 0; j < numOfanimations; j++)
@@ -114,14 +101,11 @@ namespace NK.MyEditor
                 ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[numOfFrames];
                 for (int k = 0; k < numOfFrames; k++)
                 {
-                    keyFrames[k] = new ObjectReferenceKeyframe();
-
-                    if (k != 0)
-                        keyFrames[k].time = timePerFrame * (k + 1);
-                    else
-                        keyFrames[k].time = 0;
-
-                    keyFrames[k].value = _sprites[i];
+                    keyFrames[k] = new ObjectReferenceKeyframe
+                    {
+                        value = _sprites[i],
+                        time = (float)k / samplesFrameRate
+                    };
                     i++;
                 }
 
@@ -129,10 +113,10 @@ namespace NK.MyEditor
                 var settings = AnimationUtility.GetAnimationClipSettings(animClip);
                 settings.loopTime = loop;
                 AnimationUtility.SetAnimationClipSettings(animClip, settings);
-                
+
                 AnimationUtility.SetObjectReferenceCurve(animClip, curveBinding, keyFrames);
                 // Modify this line of code to change where the animation will be saved
-                AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", spriteSheet.name + "_" + j));
+                AssetDatabase.CreateAsset(animClip, string.Format("Assets/aAssets/Animations/ScriptCreatedAnimations/{0}.anim", spriteSheet.name + "_" + j));
                 AssetDatabase.SaveAssets();
             }
 
