@@ -120,7 +120,7 @@ namespace NK.MyEditor
                 AnimationClip animClip = new AnimationClip { frameRate = samplesFrameRate };
                 AnimationUtility.SetObjectReferenceCurve(animClip, curveBinding, keyFrames);
                 // Modify this line of code to change where the animation will be saved
-                AssetDatabase.CreateAsset(animClip, string.Format("Assets/aAssets/Animations/ScriptCreatedAnimations/{0}.anim", spriteSheet.name + "_" + j));
+                AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", spriteSheet.name + "_" + j));
                 AssetDatabase.SaveAssets();
             }
 
