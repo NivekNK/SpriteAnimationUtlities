@@ -28,7 +28,7 @@ namespace NK.MyEditor
 
         private void OnEnable()
         {
-            LoadSavedPreferences();
+            LoadPreferences();
         }
 
         private void OnDisable()
@@ -136,7 +136,7 @@ namespace NK.MyEditor
             Debug.Log(string.Format("Animations of {0} Created!", spriteSheet.name));
         }
 
-        private void LoadSavedPreferences()
+        private void LoadPreferences()
         {
             var serializedPrefs = EditorPrefs.GetString(prefsKey);
             if (!string.IsNullOrEmpty(serializedPrefs))
