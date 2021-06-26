@@ -165,22 +165,6 @@ namespace NK.MyEditor
             }
 
             string newName = string.IsNullOrEmpty(animName) ? (spriteSheet != null ? spriteSheet.name : "default") : animName;
-            //if (string.IsNullOrEmpty(animName))
-            //{
-            //    if (spriteSheet != null)
-            //    {
-            //        newName = spriteSheet.name;
-            //    }
-            //    else
-            //    {
-            //        newName = "default";
-            //    }
-            //}
-            //else
-            //{
-            //    newName = animName;
-            //}
-
             EditorCurveBinding curveBinding = EditorCurveBinding.PPtrCurve(string.Empty, typeof(SpriteRenderer), "m_Sprite");
 
             int i = 0;
