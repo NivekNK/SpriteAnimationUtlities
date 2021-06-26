@@ -8,20 +8,33 @@ namespace NK.MyEditor
     public class SpriteAnimationCreator : EditorWindow
     {
         public Texture2D spriteSheet;
-        public int animWidth = 160;
-        public int animHeight = 160;
-        public int numOfanimations = 8;
-        public int numOfFrames = 3;
-        public int samplesFrameRate = 5;
-        public bool loop = true;
+        public int animWidth;
+        public int animHeight;
+        public int numOfanimations;
+        public int numOfFrames;
+        public int samplesFrameRate;
+        public bool loop;
 
-        public int pixelPerUnit = 16;
-        public bool alphaIsTransparency = true;
+        public int pixelPerUnit;
+        public bool alphaIsTransparency;
         public TextureImporterCompression compression;
-        public TextureWrapMode wrapMode = TextureWrapMode.Clamp;
+        public TextureWrapMode wrapMode;
         public FilterMode filterMode;
 
         private Sprite[] _sprites;
+
+        private readonly string prefsKey = "NK.SpriteAnimationReferences";
+        private SpriteAnimationReferences currentReferences;
+
+        private void OnEnable()
+        {
+            LoadSavedPreferences();
+        }
+
+        private void OnDisable()
+        {
+            SavePreferences();
+        }
 
         [MenuItem("Tools/NK/Sprite Animator")]
         private static void InitSpriteAnimator()
@@ -121,6 +134,46 @@ namespace NK.MyEditor
             }
 
             Debug.Log(string.Format("Animations of {0} Created!", spriteSheet.name));
+        }
+
+        private void LoadSavedPreferences()
+        {
+            var serializedPrefs = EditorPrefs.GetString(prefsKey);
+            if (!string.IsNullOrEmpty(serializedPrefs))
+            {
+                currentReferences = JsonUtility.FromJson<SpriteAnimationReferences>(serializedPrefs);
+            }
+
+            animWidth = currentReferences.animWidth;
+            animHeight = currentReferences.animHeight;
+            numOfanimations = currentReferences.numOfanimations;
+            numOfFrames = currentReferences.numOfFrames;
+            samplesFrameRate = currentReferences.samplesFrameRate;
+            loop = currentReferences.loop;
+
+            pixelPerUnit = currentReferences.pixelPerUnit;
+            alphaIsTransparency = currentReferences.alphaIsTransparency;
+            compression = currentReferences.compression;
+            wrapMode = currentReferences.wrapMode;
+            filterMode = currentReferences.filterMode;
+        }
+
+        private void SavePreferences()
+        {
+            currentReferences.animWidth = animWidth;
+            currentReferences.animHeight = animHeight;
+            currentReferences.numOfanimations = numOfanimations;
+            currentReferences.numOfFrames = numOfFrames;
+            currentReferences.samplesFrameRate = samplesFrameRate;
+            currentReferences.loop = loop;
+
+            currentReferences.pixelPerUnit = pixelPerUnit;
+            currentReferences.alphaIsTransparency = alphaIsTransparency;
+            currentReferences.compression = compression;
+            currentReferences.wrapMode = wrapMode;
+            currentReferences.filterMode = filterMode;
+
+            EditorPrefs.SetString(prefsKey, JsonUtility.ToJson(currentReferences));
         }
     }
 }
