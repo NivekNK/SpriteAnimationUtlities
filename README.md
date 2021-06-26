@@ -6,7 +6,7 @@
 **SpriteUtils.cs:**  
 &nbsp;&nbsp;  Contains the method for the slice of the sprites.
 
-**SpriteAnimationReferences.cs**
+**SpriteAnimationReferences.cs:**  
 &nbsp;&nbsp;  Save the references of the Sprite Animator editor.
 
 ![Sprite Animator](/Images/SpriteAnimator.png)
