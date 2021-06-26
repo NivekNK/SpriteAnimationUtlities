@@ -14,6 +14,7 @@ namespace NK.MyEditor
         public int numOfFrames = 3;
         public float timePerFrame = 0.1f;
         public int samplesFrameRate = 5;
+        public bool loop = true;
 
         public int pixelPerUnit = 16;
         public bool alphaIsTransparency = true;
@@ -42,6 +43,7 @@ namespace NK.MyEditor
             numOfFrames = EditorGUILayout.IntField("Frames per Animation:", numOfFrames);
             timePerFrame = EditorGUILayout.FloatField("Timer per Frame:", timePerFrame);
             samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate:", samplesFrameRate);
+            loop = EditorGUILayout.Toggle("Loop:", loop);
 
             EditorGUILayout.Space();
 
@@ -63,7 +65,7 @@ namespace NK.MyEditor
                 }
                 else
                 {
-                    Debug.LogWarning("Forgot to assign Texture!");
+                    Debug.LogWarning("Forgot to assign Image!");
                 }
             }
 
@@ -118,6 +120,10 @@ namespace NK.MyEditor
                 }
 
                 AnimationClip animClip = new AnimationClip { frameRate = samplesFrameRate };
+                var settings = AnimationUtility.GetAnimationClipSettings(animClip);
+                settings.loopTime = loop;
+                AnimationUtility.SetAnimationClipSettings(animClip, settings);
+                
                 AnimationUtility.SetObjectReferenceCurve(animClip, curveBinding, keyFrames);
                 // Modify this line of code to change where the animation will be saved
                 AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", spriteSheet.name + "_" + j));
