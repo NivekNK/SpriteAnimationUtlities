@@ -1,9 +1,11 @@
 # NKTools
 
 **SpriteAnimationCreator.cs:**  
-<br /> Script that slice and create the sprite animations with the info provided by the user.<br />
+<pre>
+  Script that slice and create the sprite animations with the info provided by the user.<pre>
   
 **SpriteUtils.cs:**  
-<br />Contains the method for the slice of the sprites.<br />
+<pre>
+  Contains the method for the slice of the sprites.<pre>
 
 ![Sprite Animator](/Images/SpriteAnimator.png)
