@@ -60,7 +60,6 @@ namespace NK.MyEditor
             {
                 if (spriteSheet != null)
                 {
-                    CutSprites();
                     MakeAnimation();
                 }
                 else
@@ -94,6 +93,14 @@ namespace NK.MyEditor
                 Debug.LogError("Number of animations or frames per animations are not set correctly!");
                 return;
             }
+
+            if (samplesFrameRate < numOfFrames)
+            {
+                Debug.LogError("Samples Frame Rate should be bigger that the number of frames!");
+                return;
+            }
+
+            CutSprites();
 
             EditorCurveBinding curveBinding = new EditorCurveBinding
             {
