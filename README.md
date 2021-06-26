@@ -9,5 +9,5 @@
 **SpriteAnimationReferences.cs:**  
 &nbsp;&nbsp;  Save the references of the Sprite Animator editor.
 
-![Sprite Animator](/Images/SpriteAnimator.png)
-![Sprite Animator Single Sprites](/Images/SpriteAnimatorSingleSprites.png)
+![Sprite Animator](/Images/SpriteAnimatorV2.png)
+![Sprite Animator Single Sprites](/Images/SpriteAnimatorSingleSpritesV2.png)

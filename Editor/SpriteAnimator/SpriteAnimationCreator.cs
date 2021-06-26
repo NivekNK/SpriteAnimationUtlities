@@ -26,7 +26,7 @@ namespace NK.MyEditor
         public FilterMode filterMode;
 
         public bool hasDirections;
-        public string[] directions;
+        public List<string> directions = new List<string>();
 
         private Sprite[] _sprites;
         private Vector2 scrollPos = Vector2.zero;
@@ -94,7 +94,7 @@ namespace NK.MyEditor
 
             hasDirections = EditorGUILayout.Toggle("Has directions:", hasDirections);
             if (hasDirections) SetArrayProperty("directions");
-            else if (directions.Length > 0) ArrayUtility.Clear(ref directions);
+            else if (directions.Count > 0) directions.Clear();
 
             animWidth = EditorGUILayout.IntField("Single Sprite Width:", animWidth);
             animHeight = EditorGUILayout.IntField("Single Sprite Height:", animHeight);

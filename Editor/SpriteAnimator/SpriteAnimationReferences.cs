@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,6 +22,6 @@ namespace NK.MyEditor
         public FilterMode filterMode;
 
         public bool hasDirections = false;
-        public string[] directions;
+        public List<string> directions = new List<string>();
     }
 }
