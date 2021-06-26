@@ -41,7 +41,7 @@ namespace NK.MyEditor
             numOfanimations = EditorGUILayout.IntField("Number of Animations:", numOfanimations);
             numOfFrames = EditorGUILayout.IntField("Frames per Animation:", numOfFrames);
             timePerFrame = EditorGUILayout.FloatField("Timer per Frame:", timePerFrame);
-            samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate", samplesFrameRate);
+            samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate:", samplesFrameRate);
 
             EditorGUILayout.Space();
 
