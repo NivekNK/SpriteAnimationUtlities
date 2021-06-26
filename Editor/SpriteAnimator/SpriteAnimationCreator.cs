@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 // Fork of: https://answers.unity.com/questions/1165627/editor-build-save-animations-in-scripts.html
 
@@ -7,7 +8,10 @@ namespace NK.MyEditor
 {
     public class SpriteAnimationCreator : EditorWindow
     {
+        public string animName;
+        public bool notUseSpriteSheet;
         public Texture2D spriteSheet;
+        public List<Sprite> spriteList = new List<Sprite>();
         public int animWidth;
         public int animHeight;
         public int numOfanimations;
@@ -22,6 +26,7 @@ namespace NK.MyEditor
         public FilterMode filterMode;
 
         private Sprite[] _sprites;
+        private Vector2 scrollPos = Vector2.zero;
 
         private readonly string prefsKey = "NK.SpriteAnimationReferences";
         private SpriteAnimationReferences currentReferences;
@@ -40,15 +45,52 @@ namespace NK.MyEditor
         private static void InitSpriteAnimator()
         {
             SpriteAnimationCreator window = GetWindow(typeof(SpriteAnimationCreator), false, "Sprite Animator", true) as SpriteAnimationCreator;
-            window.minSize = new Vector2(350, 450);
-            window.maxSize = new Vector2(350, 450);
+            window.minSize = new Vector2(380, 430);
             window.Show();
         }
 
         private void OnGUI()
         {
+            GUI.enabled = spriteSheet != null || (spriteList.Count > 0 && !CheckIfNull(spriteList));
+            if (GUILayout.Button("Generate Animation"))
+            {
+                if (spriteSheet != null || spriteList.Count > 0)
+                {
+                    if (!notUseSpriteSheet)
+                    {
+                        CutSprites();
+                    }
+                    else
+                    {
+                        _sprites = spriteList.ToArray();
+                    }
+                    MakeAnimation();
+                }
+                else
+                {
+                    Debug.LogWarning("Forgot to assign Images!");
+                }
+            }
+            GUI.enabled = true;
+
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandHeight(true));
+
             EditorGUILayout.LabelField("Animation Settings:", EditorStyles.boldLabel);
-            spriteSheet = (Texture2D)EditorGUILayout.ObjectField("Sprite Sheet:", spriteSheet, typeof(Texture2D), true);
+
+            animName = EditorGUILayout.TextField("Animation Name:", animName);
+            notUseSpriteSheet = EditorGUILayout.Toggle("Use Single Sprites:", notUseSpriteSheet);
+            if (!notUseSpriteSheet)
+            {
+                spriteSheet = (Texture2D)EditorGUILayout.ObjectField("Sprite Sheet:", spriteSheet, typeof(Texture2D), true);
+            }
+            else
+            {
+                ScriptableObject target = this;
+                SerializedObject so = new SerializedObject(target);
+                SerializedProperty property = so.FindProperty("spriteList");
+                EditorGUILayout.PropertyField(property, true);
+                so.ApplyModifiedProperties();
+            }
             animWidth = EditorGUILayout.IntField("Single Sprite Width:", animWidth);
             animHeight = EditorGUILayout.IntField("Single Sprite Height:", animHeight);
             numOfanimations = EditorGUILayout.IntField("Number of Animations:", numOfanimations);
@@ -56,6 +98,7 @@ namespace NK.MyEditor
             samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate", samplesFrameRate);
             loop = EditorGUILayout.Toggle("Loop:", loop);
 
+            GUI.enabled = spriteSheet != null;
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Texture Settings:", EditorStyles.boldLabel);
@@ -64,23 +107,24 @@ namespace NK.MyEditor
             compression = (TextureImporterCompression)EditorGUILayout.EnumPopup("Texture Compression:", compression);
             wrapMode = (TextureWrapMode)EditorGUILayout.EnumPopup("Wrap Mode:", wrapMode);
             filterMode = (FilterMode)EditorGUILayout.EnumPopup("Filter Mode:", filterMode);
+            GUI.enabled = true;
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("Generate Animation"))
-            {
-                if (spriteSheet != null)
-                {
-                    CutSprites();
-                    MakeAnimation();
-                }
-                else
-                {
-                    Debug.LogWarning("Forgot to assign Image!");
-                }
-            }
+            EditorGUILayout.EndScrollView();
 
             Repaint();
+        }
+
+        private bool CheckIfNull(List<Sprite> sprites)
+        {
+            foreach (Sprite sprite in sprites)
+            {
+                if (sprite == null)
+                    return true;
+            }
+
+            return false;
         }
 
         private void CutSprites()
@@ -106,6 +150,23 @@ namespace NK.MyEditor
                 return;
             }
 
+            string newName;
+            if (string.IsNullOrEmpty(animName))
+            {
+                if (spriteSheet != null)
+                {
+                    newName = spriteSheet.name;
+                }
+                else
+                {
+                    newName = "default";
+                }
+            }
+            else
+            {
+                newName = animName;
+            }
+
             EditorCurveBinding curveBinding = EditorCurveBinding.PPtrCurve(string.Empty, typeof(SpriteRenderer), "m_Sprite");
 
             int i = 0;
@@ -129,11 +190,11 @@ namespace NK.MyEditor
 
                 AnimationUtility.SetObjectReferenceCurve(animClip, curveBinding, keyFrames);
                 // Modify this line of code to change where the animation will be saved
-                AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", spriteSheet.name + "_" + j));
+                AssetDatabase.CreateAsset(animClip, string.Format("Assets/aAssets/Animations/ScriptCreatedAnimations/{0}.anim", newName + "_" + j));
                 AssetDatabase.SaveAssets();
             }
 
-            Debug.Log(string.Format("Animations of {0} Created!", spriteSheet.name));
+            Debug.Log(string.Format("Animations of {0} Created!", newName));
         }
 
         private void LoadPreferences()
@@ -144,6 +205,7 @@ namespace NK.MyEditor
                 currentReferences = JsonUtility.FromJson<SpriteAnimationReferences>(serializedPrefs);
             }
 
+            notUseSpriteSheet = currentReferences.notUseSpriteSheet;
             animWidth = currentReferences.animWidth;
             animHeight = currentReferences.animHeight;
             numOfanimations = currentReferences.numOfanimations;
@@ -160,6 +222,7 @@ namespace NK.MyEditor
 
         private void SavePreferences()
         {
+            currentReferences.notUseSpriteSheet = notUseSpriteSheet;
             currentReferences.animWidth = animWidth;
             currentReferences.animHeight = animHeight;
             currentReferences.numOfanimations = numOfanimations;
