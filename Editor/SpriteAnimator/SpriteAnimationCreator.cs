@@ -85,6 +85,7 @@ namespace NK.MyEditor
             }
             else
             {
+                if (spriteSheet != null) spriteSheet = null;
                 ScriptableObject target = this;
                 SerializedObject so = new SerializedObject(target);
                 SerializedProperty property = so.FindProperty("spriteList");
@@ -190,7 +191,7 @@ namespace NK.MyEditor
 
                 AnimationUtility.SetObjectReferenceCurve(animClip, curveBinding, keyFrames);
                 // Modify this line of code to change where the animation will be saved
-                AssetDatabase.CreateAsset(animClip, string.Format("Assets/aAssets/Animations/ScriptCreatedAnimations/{0}.anim", newName + "_" + j));
+                AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", newName + "_" + j));
                 AssetDatabase.SaveAssets();
             }
 
