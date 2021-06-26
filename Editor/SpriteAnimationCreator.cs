@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEditor;
 
 // Fork of: https://answers.unity.com/questions/1165627/editor-build-save-animations-in-scripts.html
-// Save functionality fork of: https://gist.github.com/edwardrowe/d4c21e014e39fe15f8ecbb440eedffad
 
 namespace NK.MyEditor
 {
