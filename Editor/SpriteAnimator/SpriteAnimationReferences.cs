@@ -6,6 +6,7 @@ namespace NK.MyEditor
 	[System.Serializable]
 	public class SpriteAnimationReferences
 	{
+        public bool notUseSpriteSheet = false;
         public int animWidth = 160;
         public int animHeight = 160;
         public int numOfanimations = 8;
@@ -18,5 +19,8 @@ namespace NK.MyEditor
         public TextureImporterCompression compression;
         public TextureWrapMode wrapMode = TextureWrapMode.Clamp;
         public FilterMode filterMode;
+
+        public bool hasDirections = false;
+        public string[] directions;
     }
 }

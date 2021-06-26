@@ -25,6 +25,9 @@ namespace NK.MyEditor
         public TextureWrapMode wrapMode;
         public FilterMode filterMode;
 
+        public bool hasDirections;
+        public string[] directions;
+
         private Sprite[] _sprites;
         private Vector2 scrollPos = Vector2.zero;
 
@@ -86,12 +89,13 @@ namespace NK.MyEditor
             else
             {
                 if (spriteSheet != null) spriteSheet = null;
-                ScriptableObject target = this;
-                SerializedObject so = new SerializedObject(target);
-                SerializedProperty property = so.FindProperty("spriteList");
-                EditorGUILayout.PropertyField(property, true);
-                so.ApplyModifiedProperties();
+                SetArrayProperty("spriteList");
             }
+
+            hasDirections = EditorGUILayout.Toggle("Has directions:", hasDirections);
+            if (hasDirections) SetArrayProperty("directions");
+            else if (directions.Length > 0) ArrayUtility.Clear(ref directions);
+
             animWidth = EditorGUILayout.IntField("Single Sprite Width:", animWidth);
             animHeight = EditorGUILayout.IntField("Single Sprite Height:", animHeight);
             numOfanimations = EditorGUILayout.IntField("Number of Animations:", numOfanimations);
@@ -128,6 +132,15 @@ namespace NK.MyEditor
             return false;
         }
 
+        private void SetArrayProperty(string name)
+        {
+            ScriptableObject target = this;
+            SerializedObject serializedObject = new SerializedObject(target);
+            SerializedProperty property = serializedObject.FindProperty(name);
+            EditorGUILayout.PropertyField(property, true);
+            serializedObject.ApplyModifiedProperties();
+        }
+
         private void CutSprites()
         {
             SpriteUtils.SliceSprites(animWidth, animHeight, new Texture2D[] { spriteSheet }, pixelPerUnit, compression, alphaIsTransparency, wrapMode, filterMode);
@@ -151,22 +164,22 @@ namespace NK.MyEditor
                 return;
             }
 
-            string newName;
-            if (string.IsNullOrEmpty(animName))
-            {
-                if (spriteSheet != null)
-                {
-                    newName = spriteSheet.name;
-                }
-                else
-                {
-                    newName = "default";
-                }
-            }
-            else
-            {
-                newName = animName;
-            }
+            string newName = string.IsNullOrEmpty(animName) ? (spriteSheet != null ? spriteSheet.name : "default") : animName;
+            //if (string.IsNullOrEmpty(animName))
+            //{
+            //    if (spriteSheet != null)
+            //    {
+            //        newName = spriteSheet.name;
+            //    }
+            //    else
+            //    {
+            //        newName = "default";
+            //    }
+            //}
+            //else
+            //{
+            //    newName = animName;
+            //}
 
             EditorCurveBinding curveBinding = EditorCurveBinding.PPtrCurve(string.Empty, typeof(SpriteRenderer), "m_Sprite");
 
@@ -190,8 +203,9 @@ namespace NK.MyEditor
                 AnimationUtility.SetAnimationClipSettings(animClip, settings);
 
                 AnimationUtility.SetObjectReferenceCurve(animClip, curveBinding, keyFrames);
+                string clipName = hasDirections ? newName + "_" + directions[j] : newName + "_" + j;
                 // Modify this line of code to change where the animation will be saved
-                AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", newName + "_" + j));
+                AssetDatabase.CreateAsset(animClip, string.Format("Assets/Animations/ScriptCreatedAnimations/{0}.anim", clipName));
                 AssetDatabase.SaveAssets();
             }
 
@@ -219,6 +233,9 @@ namespace NK.MyEditor
             compression = currentReferences.compression;
             wrapMode = currentReferences.wrapMode;
             filterMode = currentReferences.filterMode;
+
+            hasDirections = currentReferences.hasDirections;
+            directions = currentReferences.directions;
         }
 
         private void SavePreferences()
@@ -236,6 +253,9 @@ namespace NK.MyEditor
             currentReferences.compression = compression;
             currentReferences.wrapMode = wrapMode;
             currentReferences.filterMode = filterMode;
+
+            currentReferences.hasDirections = hasDirections;
+            currentReferences.directions = directions;
 
             EditorPrefs.SetString(prefsKey, JsonUtility.ToJson(currentReferences));
         }
