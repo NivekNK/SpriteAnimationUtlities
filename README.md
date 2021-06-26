@@ -1,5 +1,10 @@
 # NKTools
 
+The action of every agent <br />
+  into the world <br />
+starts <br />
+  from their physical selves. <br />
+
 **SpriteAnimationCreator.cs:**  
    Script that slice and create the sprite animations with the info provided by the user.
   
