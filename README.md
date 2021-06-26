@@ -5,3 +5,5 @@
   
 *SpriteUtils.cs: //
   Contains the method for the slice of the sprites.
+
+![Sprite Animator](/Images/SpriteAnimator.png)
