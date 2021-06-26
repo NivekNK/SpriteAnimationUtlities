@@ -95,11 +95,11 @@ namespace NK.MyEditor
                 return;
             }
 
-            if (samplesFrameRate < numOfFrames)
-            {
-                Debug.LogError("Samples Frame Rate should be bigger that the number of frames!");
-                return;
-            }
+            //if (samplesFrameRate < numOfFrames)
+            //{
+            //    Debug.LogError("Samples Frame Rate should be bigger that the number of frames!");
+            //    return;
+            //}
 
             EditorCurveBinding curveBinding = new EditorCurveBinding
             {
