@@ -7,3 +7,4 @@
 &nbsp;&nbsp;  Contains the method for the slice of the sprites.
 
 ![Sprite Animator](/Images/SpriteAnimator.png)
+![Sprite Animator Single Sprites](/Images/SpriteAnimatorSingleSprites.png)
