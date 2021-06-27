@@ -11,7 +11,7 @@ namespace NK.MyEditor
         public string animName;
         public bool notUseSpriteSheet;
         public Texture2D spriteSheet;
-        public List<Sprite> spriteList = new List<Sprite>();
+        public List<Texture2D> spriteList = new List<Texture2D>();
         public int animWidth;
         public int animHeight;
         public int numOfanimations;
@@ -65,7 +65,7 @@ namespace NK.MyEditor
                     }
                     else
                     {
-                        _sprites = spriteList.ToArray();
+                        GetSingleSprites();
                     }
                     MakeAnimation();
                 }
@@ -103,7 +103,6 @@ namespace NK.MyEditor
             samplesFrameRate = EditorGUILayout.IntField("Samples Frame Rate", samplesFrameRate);
             loop = EditorGUILayout.Toggle("Loop:", loop);
 
-            GUI.enabled = spriteSheet != null;
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("Texture Settings:", EditorStyles.boldLabel);
@@ -112,7 +111,6 @@ namespace NK.MyEditor
             compression = (TextureImporterCompression)EditorGUILayout.EnumPopup("Texture Compression:", compression);
             wrapMode = (TextureWrapMode)EditorGUILayout.EnumPopup("Wrap Mode:", wrapMode);
             filterMode = (FilterMode)EditorGUILayout.EnumPopup("Filter Mode:", filterMode);
-            GUI.enabled = true;
 
             EditorGUILayout.Space();
 
@@ -121,9 +119,9 @@ namespace NK.MyEditor
             Repaint();
         }
 
-        private bool CheckIfNull(List<Sprite> sprites)
+        private bool CheckIfNull(List<Texture2D> sprites)
         {
-            foreach (Sprite sprite in sprites)
+            foreach (Texture2D sprite in sprites)
             {
                 if (sprite == null)
                     return true;
@@ -139,6 +137,19 @@ namespace NK.MyEditor
             SerializedProperty property = serializedObject.FindProperty(name);
             EditorGUILayout.PropertyField(property, true);
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void GetSingleSprites()
+        {
+            _sprites = new Sprite[spriteList.Count];
+
+            for (int i = 0; i < spriteList.Count; i++)
+            {
+                Texture2D texture = spriteList[i];
+                SpriteUtils.SetSpriteProperties(texture, pixelPerUnit, compression, alphaIsTransparency, wrapMode, filterMode);
+                Object[] _objects = AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(texture));
+                _sprites[i] = _objects[0] as Sprite;
+            }
         }
 
         private void CutSprites()

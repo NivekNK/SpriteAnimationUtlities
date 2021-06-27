@@ -14,14 +14,7 @@ namespace NK.MyEditor
             {
                 string path = AssetDatabase.GetAssetPath(spriteSheets[z]);
                 TextureImporter ti = AssetImporter.GetAtPath(path) as TextureImporter;
-                ti.isReadable = true;
-                ti.textureType = TextureImporterType.Sprite;
-                ti.spriteImportMode = SpriteImportMode.Multiple;
-                ti.alphaIsTransparency = alphaIsTransparency;
-                if (pixelPerUnit != 0) ti.spritePixelsPerUnit = pixelPerUnit;
-                ti.wrapMode = wrap;
-                ti.filterMode = filter;
-                ti.textureCompression = compression;
+                SetTextureImporter(ref ti, pixelPerUnit, compression, alphaIsTransparency, wrap, filter);
 
                 List<SpriteMetaData> newData = new List<SpriteMetaData>();
 
@@ -47,6 +40,30 @@ namespace NK.MyEditor
                 AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
             }
             Debug.Log("Done Slicing!");
+        }
+
+        public static void SetSpriteProperties(Texture2D texture, int pixelPerUnit = 0,
+            TextureImporterCompression compression = TextureImporterCompression.Uncompressed, bool alphaIsTransparency = true,
+            TextureWrapMode wrap = TextureWrapMode.Clamp, FilterMode filter = FilterMode.Point)
+        {
+            string path = AssetDatabase.GetAssetPath(texture);
+            TextureImporter ti = AssetImporter.GetAtPath(path) as TextureImporter;
+            SetTextureImporter(ref ti, pixelPerUnit, compression, alphaIsTransparency, wrap, filter, SpriteImportMode.Single);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+        }
+
+        public static void SetTextureImporter(ref TextureImporter ti, int pixelPerUnit = 0,
+            TextureImporterCompression compression = TextureImporterCompression.Uncompressed, bool alphaIsTransparency = true,
+            TextureWrapMode wrap = TextureWrapMode.Clamp, FilterMode filter = FilterMode.Point, SpriteImportMode importMode = SpriteImportMode.Multiple)
+        {
+            ti.isReadable = true;
+            ti.textureType = TextureImporterType.Sprite;
+            ti.spriteImportMode = importMode;
+            ti.alphaIsTransparency = alphaIsTransparency;
+            if (pixelPerUnit != 0) ti.spritePixelsPerUnit = pixelPerUnit;
+            ti.wrapMode = wrap;
+            ti.filterMode = filter;
+            ti.textureCompression = compression;
         }
     }
 }
